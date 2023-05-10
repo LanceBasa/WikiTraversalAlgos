@@ -1,34 +1,39 @@
 import CITS2200Project;
 import CITS2200.*;
-import java.util.ArrayList;
+import java.util.*;
 
 
 public class DSAProject implements CITS2200Project{
-
-    private ArrayList<Graph> adjacencyList;
-
-
+    private Map <String, Integer> urlIDs;
+    private int nodeCount;
+    private ArrayList<AdjNodes> adjacencyList;
 
     public DSAProject(){
-        adjacencyList = new ArrayList<Graph>()
+        adjacencyList = new ArrayList<AdjNodes>();
+        urlIDs = new HashMap<String, Integer>();
+        nodeCount=0;
     }
 
-    public class Graph{
-        //private int pid:
-        private String url;
-        private Graph next;         //storing adjacent to parent
 
-        public Graph(String u, Graph a){
-            url=u;
-            next = a;
+
+
+    public class AdjNodes{
+        private int nodeID;
+        private ArrayList<Integer> adjacents;         //storing adjacent to parent
+
+        public AdjNodes(int NodeID,){
+            nodeID=NodeID;
+            adjacents=new ArrayList<Integer> ();
         }
 
-        public String getUrl(){
-            return url;
+        public int getNodeID(){
+            return nodeID;
         }
 
+        public void add(int nodeID){
+            adjacents.add(nodeID);
+        }
     }
-
 
     /**
 	 * Adds an edge to the Wikipedia page graph. If the pages do not
@@ -38,8 +43,16 @@ public class DSAProject implements CITS2200Project{
 	 * @param urlTo the URL which urlFrom has a link to.
 	 */
 	public void addEdge(String urlFrom, String urlTo){
-        if(adjacencyList.)
+        boolean nodeExists = urlIDs.containsKey(urlFrom);
+        if(!nodeExists){
+            urlIDs.put(urlFrom,nodeCount);
+            nodeCount++;
+        }
 
+        int currentNodeID = urlIDs.get(urlFrom);
+        AdjNodes currentNode = adjacencyList.get(currentNodeID);
+        int adjnodeID = urlIDs.get(urlTo);
+        currentNode.add(adjnodeID);
     }
 
 	/**
