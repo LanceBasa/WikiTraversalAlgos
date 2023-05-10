@@ -28,25 +28,37 @@ public class MyCITS2200Project implements CITS2200Project{
 
         if(!nodeFromExists){
             urlIDs.put(urlFrom,nodeCount);
+            adjacencyList.add(new ArrayList<Integer>());
             nodeCount++;
         }
         if(!nodeToExists){
             urlIDs.put(urlTo,nodeCount);
+            adjacencyList.add(new ArrayList<Integer>());
             nodeCount++;
         }
 
         int currentNodeID = urlIDs.get(urlFrom);
-        ArrayList<Integer> currentNode = new ArrayList<Integer>();
-        if (adjacencyList.get(currentNodeID).isEmpty()){
-            adjacencyList.add(currentNodeID,currentNode); 
-        }else{
-            currentNode=adjacencyList.get(currentNodeID);
-        }
+        ArrayList<Integer> currentNode;
 
+        currentNode=adjacencyList.get(currentNodeID);
+        
+        
         //adding nodes that are adjacent to currentNode
         int adjnodeID = urlIDs.get(urlTo);
         currentNode.add(adjnodeID);
         //adjacencyList.add(currentNodeID,currentNode); 
+
+
+        //FIXME: FOR TESTING PURPOSES only
+        // for (int i = 0; i < adjacencyList.size(); i++) {
+        //     ArrayList<Integer> aNode = adjacencyList.get(i);
+        //     System.out.print("Node " + i + ": ");
+        //     for (int j = 0; j < aNode.size(); j++) {
+        //         int adjacentNode = aNode.get(j);
+        //         System.out.print(adjacentNode + " ");
+        //     }
+        //     System.out.println();
+        // }
 
     }
 
