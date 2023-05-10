@@ -1,5 +1,3 @@
-
-
 public interface CITS2200Project {
 	/**
 	 * Adds an edge to the Wikipedia page graph. If the pages do not
