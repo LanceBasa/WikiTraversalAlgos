@@ -70,7 +70,7 @@ public class MyCITS2200Project implements CITS2200Project{
 	 * @param urlTo the URL where the path should end.
 	 * @return the legnth of the shorest path in number of links followed.
 	 */
-	public int getShortestPath(String urlFrom, String urlTo){
+	public int getShortestPath(String urlFrom, String urlTo){  // needs to be breath first search using a queue
         return 0;
     }
 
