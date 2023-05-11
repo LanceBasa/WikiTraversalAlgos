@@ -53,4 +53,7 @@ public interface CITS2200Project {
 	 * @return a Hamiltonian path of the page graph.
 	 */
 	public String[] getHamiltonianPath();
+
+	// remove this. just for test
+	public void print();
 }

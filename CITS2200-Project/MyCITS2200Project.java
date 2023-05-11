@@ -13,6 +13,30 @@ public class MyCITS2200Project implements CITS2200Project{
         nodeCount=0;
     }
 
+	//remove. just for testing
+	public void print(){
+		//FIXME: FOR TESTING PURPOSES only
+
+		System.out.println("\n----------------------------------Mapping-------------------------------------\n");
+		for (Map.Entry<String, Integer> entry: urlIDs.entrySet()){
+			String key = entry.getKey();
+			Integer value = entry.getValue();
+			System.out.println("ID: " + value + "\tUrl: " + key );
+		}
+		
+		System.out.println("\n-------------------------------Direct Connections-------------------------------------\n");
+		for (int i = 0; i < adjacencyList.size(); i++) {
+			ArrayList<Integer> aNode = adjacencyList.get(i);
+			System.out.print("Node " + i + ": ");
+			for (int j = 0; j < aNode.size(); j++) {
+				int adjacentNode = aNode.get(j);
+				System.out.print(adjacentNode + " ");
+			}
+			System.out.println();
+		}
+
+
+	}
 
     /**
 	 * Adds an edge to the Wikipedia page graph. If the pages do not
@@ -41,25 +65,10 @@ public class MyCITS2200Project implements CITS2200Project{
         ArrayList<Integer> currentNode;
 
         currentNode=adjacencyList.get(currentNodeID);
-        
-        
         //adding nodes that are adjacent to currentNode
         int adjnodeID = urlIDs.get(urlTo);
         currentNode.add(adjnodeID);
         //adjacencyList.add(currentNodeID,currentNode); 
-
-
-        //FIXME: FOR TESTING PURPOSES only
-        // for (int i = 0; i < adjacencyList.size(); i++) {
-        //     ArrayList<Integer> aNode = adjacencyList.get(i);
-        //     System.out.print("Node " + i + ": ");
-        //     for (int j = 0; j < aNode.size(); j++) {
-        //         int adjacentNode = aNode.get(j);
-        //         System.out.print(adjacentNode + " ");
-        //     }
-        //     System.out.println();
-        // }
-
     }
 
 	/**
@@ -71,8 +80,46 @@ public class MyCITS2200Project implements CITS2200Project{
 	 * @return the legnth of the shorest path in number of links followed.
 	 */
 	public int getShortestPath(String urlFrom, String urlTo){  // needs to be breath first search using a queue
-        return 0;
+
+		LinkedList<Integer> queue = new LinkedList<Integer>();      // queue for traversing the graph
+		int startID=urlIDs.get(urlFrom);							//starting id
+		int finishID=urlIDs.get(urlTo);								//finish id
+		
+		int[] distances= new int[nodeCount];						// distance from given starting node  to finish node
+		boolean[] visited = new boolean[nodeCount];					// keep track of what is visited
+		for (int i=0;i<nodeCount;i++){								// initialize distances to 0 and visited to false
+			distances[i]=0;
+			visited[i]=false;
+		}
+
+		queue.addLast(startID);                                 // adding the root (startVertex)
+		while (!queue.isEmpty()) {
+
+			int head = queue.poll();
+			visited[head]=true;
+			ArrayList<Integer> currentNodeDirectPaths= adjacencyList.get(head);
+
+			//check if head of the queue has direct link to finish vertex if so just add whatever 
+			if(currentNodeDirectPaths.contains(finishID)){
+				distances[finishID]= distances[head] +1;
+				return distances[finishID];
+			}
+
+			for (int i = 0; i < currentNodeDirectPaths.size(); i++) {
+				if(!visited[currentNodeDirectPaths.get(i)] && !queue.contains(currentNodeDirectPaths.get(i))){
+					queue.addLast(currentNodeDirectPaths.get(i));				
+					distances[currentNodeDirectPaths.get(i)]= distances[head] + 1;
+				}
+			}
+		}
+		return distances[finishID];                                             
     }
+
+
+
+
+
+
 
 	/**
 	 * Finds all the centers of the page graph. The order of pages
@@ -125,7 +172,7 @@ public class MyCITS2200Project implements CITS2200Project{
 
 
 
-
+	
 
 
 
@@ -149,6 +196,7 @@ public class MyCITS2200Project implements CITS2200Project{
 				System.out.println("Adding edge from " + from + " to " + to);
 				project.addEdge(from, to);
 			}
+			project.print();
 		} catch (Exception e) {
 			System.out.println("There was a problem:");
 			System.out.println(e.toString());
@@ -164,6 +212,20 @@ public class MyCITS2200Project implements CITS2200Project{
 		loadGraph(proj, pathToGraphFile);
 
 		// Write your own tests!
+
+		//change it to test
+		String urlFrom = "/wiki/Braess%27_paradox";
+		String urlTo = "/wiki/Minimum-cost_flow_problem";
+
+
+		int q1result = proj.getShortestPath(urlFrom, urlTo);
+
+		
+		System.out.println("\n----------------------------------Question 1: ---------------------------------------------------");
+		System.out.println("-------min number of traversed vertex from given url to finish url---------------\n");
+
+		System.out.println("Shortest path from" + urlFrom + " to " + urlTo + " is " + q1result + "\n");
+
 	}
 
 }
