@@ -151,6 +151,9 @@ public class MyCITS2200Project implements CITS2200Project{
 		//int innerSCCCount=0;
 
 		int[] lowLinkVal=new int[nodeCount];
+		for (int i = 0; i < nodeCount; i++) {
+    		scc.add(new ArrayList<>());
+		}
 		Stack<Integer> myStack = new Stack<Integer>();
 
 		//initialize all values
@@ -160,30 +163,30 @@ public class MyCITS2200Project implements CITS2200Project{
 
 		for (int i=0; i<nodeCount;i++){
 			if(!myStack.contains(i) && lowLinkVal[i]== Integer.MAX_VALUE){
-				scc.add(new ArrayList<String>());
 				myStack.add(i);
 				dfs(myStack, lowLinkVal);
 				
 
-				while (!myStack.isEmpty()){
-					int partofSCC=myStack.pop();
-					int currentLowestSCC=lowLinkVal[partofSCC];
-					for(int j=0; j<nodeCount;j++){
-						if (lowLinkVal[j]==currentLowestSCC){
-							for (Map.Entry<String, Integer> entry: urlIDs.entrySet()){
-								String key = entry.getKey();
-								Integer value = entry.getValue();
-								ArrayList<String> temp=scc.get(sccCount);
+				
+			}
+			while (!myStack.isEmpty()){
+				int partofSCC=myStack.pop();
+				int currentLowestSCC=lowLinkVal[partofSCC];
+				for(int j=0; j<nodeCount;j++){
+					if (lowLinkVal[j]==currentLowestSCC ){
+						for (Map.Entry<String, Integer> entry: urlIDs.entrySet()){
+							String key = entry.getKey();
+							Integer value = entry.getValue();
+							ArrayList<String> temp=scc.get(sccCount);
 
-								if(value==j && !temp.contains(key) ){
-									temp.add(key);
-								}
-							}						
+							if(value.equals(j) && !temp.contains(key) ){
+								temp.add(key);
+							}
 						}
 					}
-					sccCount++;
-
 				}
+				sccCount++;
+
 			}
 		}
 
@@ -210,7 +213,7 @@ public class MyCITS2200Project implements CITS2200Project{
 				lowLinkVal[nodeID]=min(lowLinkVal[j],lowLinkVal[nodeID]);
 			}
 		}
-	}
+	} 
 
 
 
