@@ -147,55 +147,63 @@ public class MyCITS2200Project implements CITS2200Project{
 	 */
 	public String[][] getStronglyConnectedComponents(){
 		ArrayList<ArrayList<String>> scc = new ArrayList<>();
-		int sccCount=0;
+		Integer sccCount=0;
 		//int innerSCCCount=0;
 
 		int[] lowLinkVal=new int[nodeCount];
 		Stack<Integer> myStack = new Stack<Integer>();
-
-		//initialize all values
+ 
+		//initialize all values as unvisited if Integer.NA
 		for(int i=0; i<nodeCount;i++){
 			scc.add(new ArrayList<String>());
 			lowLinkVal[i]=Integer.MAX_VALUE;
 		}
 
 		for (int i=0; i<nodeCount;i++){
-			if(!myStack.contains(i) && lowLinkVal[i]== Integer.MAX_VALUE){
+			if(lowLinkVal[i]== Integer.MAX_VALUE){
 				myStack.add(i);
-				dfs(myStack, lowLinkVal);
-			}
-
-			boolean[] added = new boolean[nodeCount];
-			Arrays.fill(added,false);
-
-			while (!myStack.isEmpty()){
-				System.out.println("the scc count is: " + sccCount);
-
-				
-				int partofSCC=myStack.pop();
-				int currentLowestSCC=lowLinkVal[partofSCC];
-				if(added[currentLowestSCC]){
-					continue;
-				}else{
-					added[currentLowestSCC]=true;
-					sccCount++;
-				}
-				for(int j=0; j<nodeCount;j++){
-					if (lowLinkVal[j]==currentLowestSCC){
-						for (Map.Entry<String, Integer> entry: urlIDs.entrySet()){
-							String key = entry.getKey();
-							Integer value = entry.getValue();
-							ArrayList<String> temp=scc.get(sccCount);
-							if(value==j && !temp.contains(key) ){
-								temp.add(key);
-							}
-						}						
-					}
-				}
+				dfs(myStack, lowLinkVal,scc,sccCount);
 			}
 		}
-		String[][] sccArray = new String[sccCount][];
-		for (int i = 0; i < sccCount; i++) {
+
+		boolean[] added = new boolean[nodeCount];
+		Arrays.fill(added,false);
+
+		// while (!myStack.isEmpty()){
+				
+
+				
+		// 	int partofSCC=myStack.pop();
+		// 	int currentLowestSCC=lowLinkVal[partofSCC];
+
+		// 	System.out.print("the scc count is: " + sccCount);
+		// 	System.out.print("\t the lowLink val is: " + currentLowestSCC);
+		// 	System.out.println("\t the current node is: " + partofSCC);
+
+			
+		// 	if(added[currentLowestSCC]){
+		// 		continue;
+		// 	}else{
+		// 		added[currentLowestSCC]=true;
+		// 	}
+		// 	for(int j=0; j<nodeCount;j++){
+		// 		if (lowLinkVal[j]==currentLowestSCC){
+		// 			for (Map.Entry<String, Integer> entry: urlIDs.entrySet()){
+		// 				String key = entry.getKey();
+		// 				Integer value = entry.getValue();
+		// 				ArrayList<String> temp=scc.get(sccCount);
+		// 				if(value==j && !temp.contains(key) ){
+		// 					temp.add(key);
+		// 				}
+		// 			}						
+		// 		}
+		// 	}
+		// 	sccCount++;
+		// }
+
+		System.out.println("the scc count is: " + scc.size());
+		String[][] sccArray = new String[scc.size()][];
+		for (int i = 0; i < scc.size(); i++) {
 			ArrayList<String> component = scc.get(i);
 			if(!scc.isEmpty()){}
 			sccArray[i] = component.toArray(new String[component.size()]);
@@ -204,21 +212,78 @@ public class MyCITS2200Project implements CITS2200Project{
     }
 
 
-	private void dfs(Stack<Integer> myStack, int[] lowLinkVal){
-		int nodeID=myStack.peek();
-		lowLinkVal[nodeID]=nodeID;
-		ArrayList<Integer> currentNodeAdj = adjacencyList.get(nodeID);
-		for (Integer j: currentNodeAdj){
-			if (!myStack.contains(j) && lowLinkVal[j]==Integer.MAX_VALUE){
-				myStack.add(j);
-				dfs(myStack, lowLinkVal);
-			}
-			if(myStack.contains(j)){
-				lowLinkVal[nodeID]=min(lowLinkVal[j],lowLinkVal[nodeID]);
-			}
+	private void dfs(Stack<Integer> myStack, int[] lowLinkVal, ArrayList<ArrayList<String>> scc, Integer counter) {
+    int nodeID = myStack.peek();
+    lowLinkVal[nodeID] = nodeID;
+    int minLowLinkVal = nodeID; // Track the minimum lowLinkVal during traversal
+    ArrayList<Integer> currentNodeAdj = adjacencyList.get(nodeID);
+    for (Integer j : currentNodeAdj) {
+        if (!myStack.contains(j) && lowLinkVal[j] == Integer.MAX_VALUE) {
+            myStack.add(j);
+            dfs(myStack, lowLinkVal,scc,counter);
+        }
+        if (myStack.contains(j)) {
+            minLowLinkVal = Math.min(minLowLinkVal, lowLinkVal[j]);
+        }
+    }
+    lowLinkVal[nodeID] = minLowLinkVal; // Update the lowLinkVal for the current node
+
+	ArrayList<Integer> currAdj = adjacencyList.get(lowLinkVal[nodeID]);
+
+	
+	for(int neighbours : currAdj)
+	{
+		if(lowLinkVal[nodeID] > lowLinkVal[neighbours])
+		{
+			lowLinkVal[nodeID] = lowLinkVal[neighbours];
 		}
 	}
+	
 
+	if(nodeID==lowLinkVal[nodeID]){
+		ArrayList<String> currentSCC = new ArrayList<String>();
+		System.out.println("Entered line");
+		for (int i=0; i<nodeCount;i++){
+			System.out.println("Thelow link of " + i + " is " + lowLinkVal[i]);
+
+			if(lowLinkVal[i]==nodeID){
+				System.out.println(i);
+				for (Map.Entry<String, Integer> entry: urlIDs.entrySet()){
+					String key = entry.getKey();
+					Integer value = entry.getValue();
+					ArrayList<String> temp=scc.get(counter);
+					if(value==i && !temp.contains(key) ){
+						currentSCC.add(key);
+
+						System.out.println(currentSCC);
+					}
+
+					
+					
+					else
+					{
+						continue;
+					}	
+	
+					
+				}
+
+				//System.out.println("FINCUR");
+
+				
+
+			}
+			
+			
+			
+		}
+		//System.out.println("level " + sccCount++);
+		
+		counter++;
+		scc.add(currentSCC);
+		System.out.println("THIS IS COUNTER " +counter);
+	}
+}
 
 
 
