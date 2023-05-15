@@ -155,42 +155,49 @@ public class MyCITS2200Project implements CITS2200Project{
 
 		//initialize all values
 		for(int i=0; i<nodeCount;i++){
+			scc.add(new ArrayList<String>());
 			lowLinkVal[i]=Integer.MAX_VALUE;
 		}
 
 		for (int i=0; i<nodeCount;i++){
 			if(!myStack.contains(i) && lowLinkVal[i]== Integer.MAX_VALUE){
-				scc.add(new ArrayList<String>());
 				myStack.add(i);
 				dfs(myStack, lowLinkVal);
+			}
+
+			boolean[] added = new boolean[nodeCount];
+			Arrays.fill(added,false);
+
+			while (!myStack.isEmpty()){
+				System.out.println("the scc count is: " + sccCount);
+
 				
-
-				while (!myStack.isEmpty()){
-					int partofSCC=myStack.pop();
-					int currentLowestSCC=lowLinkVal[partofSCC];
-					for(int j=0; j<nodeCount;j++){
-						if (lowLinkVal[j]==currentLowestSCC){
-							for (Map.Entry<String, Integer> entry: urlIDs.entrySet()){
-								String key = entry.getKey();
-								Integer value = entry.getValue();
-								ArrayList<String> temp=scc.get(sccCount);
-
-								if(value==j && !temp.contains(key) ){
-									temp.add(key);
-								}
-							}						
-						}
-					}
+				int partofSCC=myStack.pop();
+				int currentLowestSCC=lowLinkVal[partofSCC];
+				if(added[currentLowestSCC]){
+					continue;
+				}else{
+					added[currentLowestSCC]=true;
 					sccCount++;
-
+				}
+				for(int j=0; j<nodeCount;j++){
+					if (lowLinkVal[j]==currentLowestSCC){
+						for (Map.Entry<String, Integer> entry: urlIDs.entrySet()){
+							String key = entry.getKey();
+							Integer value = entry.getValue();
+							ArrayList<String> temp=scc.get(sccCount);
+							if(value==j && !temp.contains(key) ){
+								temp.add(key);
+							}
+						}						
+					}
 				}
 			}
 		}
-
-
-		String[][] sccArray = new String[scc.size()][];
-		for (int i = 0; i < scc.size(); i++) {
+		String[][] sccArray = new String[sccCount][];
+		for (int i = 0; i < sccCount; i++) {
 			ArrayList<String> component = scc.get(i);
+			if(!scc.isEmpty()){}
 			sccArray[i] = component.toArray(new String[component.size()]);
 		}
         return sccArray;
@@ -269,7 +276,7 @@ public class MyCITS2200Project implements CITS2200Project{
 
 	public static void main(String[] args) {
 		// Change this to be the path to the graph file.
-		String pathToGraphFile = "./example_graph2.txt";
+		String pathToGraphFile = "./example_graph3.txt";
 		// Create an instance of your implementation.
 		CITS2200Project proj = new MyCITS2200Project();
 		// Load the graph into the project.
@@ -278,8 +285,8 @@ public class MyCITS2200Project implements CITS2200Project{
 		// Write your own tests!
 
 		//change it to test
-		String urlFrom = "3";
-		String urlTo = "1";
+		String urlFrom = "a";
+		String urlTo = "f";
 
 
 		int q1result = proj.getShortestPath(urlFrom, urlTo);
