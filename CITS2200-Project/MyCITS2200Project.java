@@ -1,5 +1,7 @@
 import java.util.*;
 import java.io.*;
+import static java.lang.Math.min;
+
 
 
 public class MyCITS2200Project implements CITS2200Project{
@@ -34,8 +36,6 @@ public class MyCITS2200Project implements CITS2200Project{
 			}
 			System.out.println();
 		}
-
-
 	}
 
     /**
@@ -146,10 +146,74 @@ public class MyCITS2200Project implements CITS2200Project{
 	 * @return an array containing every strongly connected component.
 	 */
 	public String[][] getStronglyConnectedComponents(){
-        String[][] bob = new String[1][1];
-        return bob;
+		ArrayList<ArrayList<String>> scc = new ArrayList<>();
+		int sccCount=0;
+		//int innerSCCCount=0;
 
+		int[] lowLinkVal=new int[nodeCount];
+		Stack<Integer> myStack = new Stack<Integer>();
+
+		//initialize all values
+		for(int i=0; i<nodeCount;i++){
+			lowLinkVal[i]=Integer.MAX_VALUE;
+		}
+
+		for (int i=0; i<nodeCount;i++){
+			if(!myStack.contains(i) && lowLinkVal[i]== Integer.MAX_VALUE){
+				scc.add(new ArrayList<String>());
+				myStack.add(i);
+				dfs(myStack, lowLinkVal);
+				
+
+				while (!myStack.isEmpty()){
+					int partofSCC=myStack.pop();
+					int currentLowestSCC=lowLinkVal[partofSCC];
+					for(int j=0; j<nodeCount;j++){
+						if (lowLinkVal[j]==currentLowestSCC){
+							for (Map.Entry<String, Integer> entry: urlIDs.entrySet()){
+								String key = entry.getKey();
+								Integer value = entry.getValue();
+								ArrayList<String> temp=scc.get(sccCount);
+
+								if(value==j && !temp.contains(key) ){
+									temp.add(key);
+								}
+							}						
+						}
+					}
+					sccCount++;
+
+				}
+			}
+		}
+
+
+		String[][] sccArray = new String[scc.size()][];
+		for (int i = 0; i < scc.size(); i++) {
+			ArrayList<String> component = scc.get(i);
+			sccArray[i] = component.toArray(new String[component.size()]);
+		}
+        return sccArray;
     }
+
+
+	private void dfs(Stack<Integer> myStack, int[] lowLinkVal){
+		int nodeID=myStack.peek();
+		lowLinkVal[nodeID]=nodeID;
+		ArrayList<Integer> currentNodeAdj = adjacencyList.get(nodeID);
+		for (Integer j: currentNodeAdj){
+			if (!myStack.contains(j) && lowLinkVal[j]==Integer.MAX_VALUE){
+				myStack.add(j);
+				dfs(myStack, lowLinkVal);
+			}
+			if(myStack.contains(j)){
+				lowLinkVal[nodeID]=min(lowLinkVal[j],lowLinkVal[nodeID]);
+			}
+		}
+	}
+
+
+
 
 	/**
 	 * Finds a Hamiltonian path in the page graph. There may be many
@@ -205,7 +269,7 @@ public class MyCITS2200Project implements CITS2200Project{
 
 	public static void main(String[] args) {
 		// Change this to be the path to the graph file.
-		String pathToGraphFile = "./example_graph.txt";
+		String pathToGraphFile = "./example_graph2.txt";
 		// Create an instance of your implementation.
 		CITS2200Project proj = new MyCITS2200Project();
 		// Load the graph into the project.
@@ -214,8 +278,8 @@ public class MyCITS2200Project implements CITS2200Project{
 		// Write your own tests!
 
 		//change it to test
-		String urlFrom = "/wiki/Braess%27_paradox";
-		String urlTo = "/wiki/Minimum-cost_flow_problem";
+		String urlFrom = "3";
+		String urlTo = "1";
 
 
 		int q1result = proj.getShortestPath(urlFrom, urlTo);
@@ -225,6 +289,22 @@ public class MyCITS2200Project implements CITS2200Project{
 		System.out.println("-------min number of traversed vertex from given url to finish url---------------\n");
 
 		System.out.println("Shortest path from" + urlFrom + " to " + urlTo + " is " + q1result + "\n");
+
+
+
+		System.out.println("\n----------------------------------Question 3: ---------------------------------------------------");
+		System.out.println("-------finds every strongly connected component of pages. ---------------\n");
+		String[][] scc = proj.getStronglyConnectedComponents();
+		for (String[] arr : scc) {
+			System.out.println("Node:\t");
+			for (String value : arr) {
+				System.out.print(value + " | ");
+				
+			}
+			System.out.println(); // Prints a new line after each outer array
+			
+
+		}
 
 	}
 
