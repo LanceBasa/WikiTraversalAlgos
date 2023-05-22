@@ -14,6 +14,7 @@ public class CITS2200ProjectTester {
 				System.out.println("Adding edge from " + from + " to " + to);
 				project.addEdge(from, to);
 			}
+			project.print();
 		} catch (Exception e) {
 			System.out.println("There was a problem:");
 			System.out.println(e.toString());
@@ -29,5 +30,45 @@ public class CITS2200ProjectTester {
 		loadGraph(proj, pathToGraphFile);
 
 		// Write your own tests!
+
+		//change it to test
+		String urlFrom = "/wiki/Max-flow_min-cut_theorem";
+		String urlTo = "/wiki/Push%E2%80%93relabel_maximum_flow_algorithm";
+
+
+		int q1result = proj.getShortestPath(urlFrom, urlTo);
+
+		
+		System.out.println("\n---------------------------------- Question 1: ---------------------------------------------------");
+		System.out.println("-------------------- min number of traversed vertex from given url to finish url------------------\n");
+
+		System.out.println("Shortest path from" + urlFrom + " to " + urlTo + " is " + q1result + "\n");
+
+
+
+		System.out.println("\n---------------------------------- Question 3: ---------------------------------------------------");
+		System.out.println("--------------------- finds every strongly connected component of pages. -------------------------\n");
+		String[][] scc = proj.getStronglyConnectedComponents();
+		for (String[] arr : scc) {
+			System.out.println("Node:\t");
+			for (String value : arr) {
+				System.out.print(value + "\t|\t");
+				
+			}
+			System.out.println("\n"); // Prints a new line after each outer array
+		}
+
+
+		System.out.println("\n---------------------------------- Question 4: ---------------------------------------------------");
+		System.out.println("--------------------------------------- get centers of a graph -----------------------------------\n");
+
+		String[] centers = proj.getCenters();
+		for (String s : centers){
+			System.out.print (s + "\t");
+		}
+		System.out.println("");
+
+
 	}
+
 }
