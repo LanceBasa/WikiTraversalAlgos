@@ -23,7 +23,7 @@ public class CITS2200ProjectTester {
 
 	public static void main(String[] args) {
 		// Change this to be the path to the graph file.
-		String pathToGraphFile = "./example_graph.txt";
+		String pathToGraphFile = "./example_graph3.txt";
 		// Create an instance of your implementation.
 		CITS2200Project proj = new MyCITS2200Project();
 		// Load the graph into the project.
@@ -32,8 +32,8 @@ public class CITS2200ProjectTester {
 		// Write your own tests!
 
 		//change it to test
-		String urlFrom = "/wiki/Max-flow_min-cut_theorem";
-		String urlTo = "/wiki/Push%E2%80%93relabel_maximum_flow_algorithm";
+		String urlFrom = "a";
+		String urlTo = "c";
 
 
 		int q1result = proj.getShortestPath(urlFrom, urlTo);
@@ -50,7 +50,7 @@ public class CITS2200ProjectTester {
 		System.out.println("--------------------- finds every strongly connected component of pages. -------------------------\n");
 		String[][] scc = proj.getStronglyConnectedComponents();
 		for (String[] arr : scc) {
-			System.out.println("Node:\t");
+			System.out.println("SCC:\t");
 			for (String value : arr) {
 				System.out.print(value + "\t|\t");
 				
