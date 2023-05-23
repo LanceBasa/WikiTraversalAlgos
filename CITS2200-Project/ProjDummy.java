@@ -15,28 +15,7 @@ public class ProjDummy implements CITS2200Project{
         nodeCount=0;
     }
 
-	//remove. just for testing
-	public void print(){
-		//FIXME: FOR TESTING PURPOSES only
 
-		System.out.println("\n----------------------------------Mapping-------------------------------------\n");
-		for (Map.Entry<String, Integer> entry: urlIDs.entrySet()){
-			String key = entry.getKey();
-			Integer value = entry.getValue();
-			System.out.println("ID: " + value + "\tUrl: " + key );
-		}
-		
-		System.out.println("\n-------------------------------Direct Connections-------------------------------------\n");
-		for (int i = 0; i < adjacencyList.size(); i++) {
-			ArrayList<Integer> aNode = adjacencyList.get(i);
-			System.out.print("Node " + i + ": ");
-			for (int j = 0; j < aNode.size(); j++) {
-				int adjacentNode = aNode.get(j);
-				System.out.print(adjacentNode + " ");
-			}
-			System.out.println();
-		}
-	}
 
     /**
 	 * Adds an edge to the Wikipedia page graph. If the pages do not
@@ -308,6 +287,31 @@ public class ProjDummy implements CITS2200Project{
         return bob;
 
     }
+
+
+
+    	//remove. just for testing
+	public void print(){
+		//FIXME: FOR TESTING PURPOSES only
+
+		System.out.println("\n----------------------------------Mapping-------------------------------------\n");
+		for (Map.Entry<String, Integer> entry: urlIDs.entrySet()){
+			String key = entry.getKey();
+			Integer value = entry.getValue();
+			System.out.println("ID: " + value + "\tUrl: " + key );
+		}
+		
+		System.out.println("\n-------------------------------Direct Connections-------------------------------------\n");
+		for (int i = 0; i < adjacencyList.size(); i++) {
+			ArrayList<Integer> aNode = adjacencyList.get(i);
+			System.out.print("Node " + i + ": ");
+			for (int j = 0; j < aNode.size(); j++) {
+				int adjacentNode = aNode.get(j);
+				System.out.print(adjacentNode + " ");
+			}
+			System.out.println();
+		}
+	}
 }
 
     

@@ -62,9 +62,7 @@ public class MyCITS2200Project implements CITS2200Project{
         }
 
         int currentNodeID = urlIDs.get(urlFrom);
-        ArrayList<Integer> currentNode;
-
-        currentNode=adjacencyList.get(currentNodeID);
+        ArrayList<Integer> currentNode = adjacencyList.get(currentNodeID);
         //adding nodes that are adjacent to currentNode
         int adjnodeID = urlIDs.get(urlTo);
         currentNode.add(adjnodeID);
@@ -127,75 +125,45 @@ public class MyCITS2200Project implements CITS2200Project{
 	 * @return an array containing all the URLs that correspond to pages that are centers.
 	 */
 	public String[] getCenters(){
-        int[] maxShortestPathPerNode = new int[nodeCount];  // to store the furthest node of each nodes
-        int min = -1;                                       // for storing the minimum of the maximums
-        List<Integer> centersID = new ArrayList<Integer>(); //temporary to stor centersID as we dont know how mny centers
+		//variable to store nodes in a list. to be converted to an array later
+        List<String> centerslist = new ArrayList<String>();		
+		// Tracker of the current minimum of the maximum shortest path
+		int minimum=Integer.MAX_VALUE;
 
         //traverse through each node and perform bfs for each node
         for(String currentFrom: urlIDs.keySet()){
-            //array for current node shortest path for each node
-            int[] currentNodeShortestPaths= new int[nodeCount];
+			// tracker for the maximum shortest path in the current node
+			int maxShortestPath = 0;
 
-            //inner loop to loop the starting vertex to next vertex, changing the ending vertex.
+            // inner loop to loop the starting vertex to next vertex, changing the ending vertex.
+			// the starting vertex will not change untill all available vertex for ending has been tested
             for(String currentTo: urlIDs.keySet()){
                 // not considering the starting vertex for centers
                 if (currentFrom!= currentTo){
-                    int currentToID=urlIDs.get(currentTo);
-                    int shortestpath = getShortestPath(currentFrom,currentTo);
-                    currentNodeShortestPaths[currentToID]= shortestpath;
+                    int curentShortestPath = getShortestPath(currentFrom,currentTo);
+					// if there is a node further than the currentTo node update the max shortest path
+					if (maxShortestPath<curentShortestPath){
+						maxShortestPath=curentShortestPath;
+					}
                 }
             }
-            // getting the currentFromID in the loop to set its maximum shortest path in the array
-            int currentFromID=urlIDs.get(currentFrom);
-            maxShortestPathPerNode[currentFromID]=getMax(currentNodeShortestPaths);
-
+			// before changing the current from node, check if the max shortest path of the current node is the minimum
+			// if so, clear the list and add the current node, else if it is equal, dont clear it and ad the node.
+			if(maxShortestPath<minimum){
+				minimum=maxShortestPath;
+				centerslist.clear();
+				centerslist.add(currentFrom);
+			}else if (maxShortestPath==minimum){
+				centerslist.add(currentFrom);
+			}
         }
 
-        // after all maximum shortest path for each vertex are collected,
-        // get the minimum of all the maximum, if the minimum is equal to more than one node, add it to output
-        min = getMin(maxShortestPathPerNode);
-        for (int i=0; i<maxShortestPathPerNode.length;i++){
-            if(maxShortestPathPerNode[i]==min){
-                centersID.add(i);
-            }
-        }
-
-
-        // converting the id back to strings
-        String[] centers = new String[centersID.size()];
-        for (int i = 0; i < centersID.size(); i++) {
-            for(Map.Entry<String, Integer> entry: urlIDs.entrySet()) {
-                if(entry.getValue()== centersID.get(i) ) {
-                    centers[i] = entry.getKey();
-                    break;
-                }
-            }
-        }
-
+		// convert the ArrayListOf Centers into a list
+        String[] centers = centerslist.toArray(new String[centerslist.size()]); 
         return centers;
     }
 
-    // helper for getCenter to find the furthest node reachable from a node
-    private int getMax(int[] nums){
-        int max=nums[0];
-        for (Integer i : nums){
-            if (i>max){
-                max=i;
-            }
-        }
-        return max;
-    }
 
-    // helper for get center to find minimum of the maxes
-    private int getMin(int[] nums){
-        int min=nums[0];
-        for (Integer i : nums){
-            if (i<min){
-                min=i;
-            }
-        }
-        return min;
-    }
 
 
 	/**
@@ -333,6 +301,7 @@ public class MyCITS2200Project implements CITS2200Project{
 
 		//initialize the arrayList
         List<List<Integer>> scc = new ArrayList<>();
+		
         for (int nodeID = 0; nodeID < nodeCount; nodeID++) {
             if (lowestLink[nodeID] == -1) {
                 dfs(nodeID, lowestLink, lowLinkVal, onStack, stack, scc);
