@@ -23,7 +23,7 @@ public class CITS2200ProjectTester {
 
 	public static void main(String[] args) {
 		// Change this to be the path to the graph file.
-		String pathToGraphFile = "./example_graph3.txt";
+		String pathToGraphFile = "./example_graph2.txt";
 		// Create an instance of your implementation.
 		CITS2200Project proj = new MyCITS2200Project();
 		// Load the graph into the project.
@@ -32,8 +32,8 @@ public class CITS2200ProjectTester {
 		// Write your own tests!
 
 		//change it to test
-		String urlFrom = "a";
-		String urlTo = "c";
+		String urlFrom = "1";
+		String urlTo = "3";
 
 
 		int q1result = proj.getShortestPath(urlFrom, urlTo);
@@ -43,6 +43,12 @@ public class CITS2200ProjectTester {
 		System.out.println("-------------------- min number of traversed vertex from given url to finish url------------------\n");
 
 		System.out.println("Shortest path from" + urlFrom + " to " + urlTo + " is " + q1result + "\n");
+		
+
+		System.out.println("\n---------------------------------- Question 2: ---------------------------------------------------");
+		System.out.println("--------------------- finds hamiltonian path using heldkarp algorithm. ---------------------------\n");
+		String[] hamiltonian = proj.getHamiltonianPath();
+
 
 
 

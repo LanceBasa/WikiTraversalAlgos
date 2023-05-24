@@ -314,12 +314,9 @@ public class MyCITS2200Project implements CITS2200Project{
             List<Integer> component = scc.get(i);
             String[] componentArray = new String[component.size()];
             for (int j = 0; j < component.size(); j++) {
-                for(Map.Entry<String, Integer> entry: urlIDs.entrySet()) {
-                    if(entry.getValue() == component.get(j)) {
-                        componentArray[j] = entry.getKey();
-                      break;
-                    }
-                }
+                int nodeID = component.get(j);
+				String url = getUrlFromID(nodeID);
+				componentArray[j]=url;     
             }
             sccArray[i] = componentArray;
         }
@@ -369,12 +366,75 @@ public class MyCITS2200Project implements CITS2200Project{
 	 * 
 	 * @return a Hamiltonian path of the page graph.
 	 */
+	@SuppressWarnings ("unchecked")
 	public String[] getHamiltonianPath(){
-        String[] bob = new String[1];
 
+		for (String node:urlIDs.keySet()){
+
+
+			// test all nodes as the starting point
+			String startNode=node;
+			int nodeID= urlIDs.get(startNode);
+
+			// get the adjacencylist of the currentnode
+
+			Queue<List> queue = new LinkedList<>();
+			List<Integer> rootPath = new ArrayList<>();
+			rootPath.add(nodeID);
+			
+			queue.add(rootPath);
+
+			boolean[] visited = new boolean[nodeCount];
+			List<Integer> currentPath;
+			while (!queue.isEmpty()){
+				Arrays.fill(visited, false);
+				currentPath = queue.poll();
+				for (Integer i : currentPath){
+					visited[i]=true;
+				}
+				
+
+				int lastNodeID = currentPath.get(currentPath.size()-1);
+				List<Integer> lastNodeAdjLst =  adjacencyList.get(lastNodeID);
+				for (Integer i: lastNodeAdjLst){
+					if (!visited[i]){
+						List<Integer> newPathList =  new ArrayList<>();
+						newPathList.addAll(currentPath);
+						newPathList.add(i);
+						queue.add(newPathList);
+						if (newPathList.size() == nodeCount){
+							for (Integer a : newPathList){
+								System.out.print(a + "\t");
+							}
+							System.out.println("");
+
+						}
+					}
+				}
+			}
+		}
+        String[] bob = new String[1];
         return bob;
 
     }
+
+
+
+	private String getUrlFromID(int nodeID) {
+		for (Map.Entry<String, Integer> entry : urlIDs.entrySet()) {
+			if (entry.getValue() == nodeID) {
+				return entry.getKey();
+			}
+		}
+		return null;
+	}
+
+
+
+
+
+		
+	
 }
 
     

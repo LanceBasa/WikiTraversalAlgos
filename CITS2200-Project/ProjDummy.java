@@ -281,9 +281,52 @@ public class ProjDummy implements CITS2200Project{
 	 * 
 	 * @return a Hamiltonian path of the page graph.
 	 */
+	@SuppressWarnings ("unchecked")
 	public String[] getHamiltonianPath(){
-        String[] bob = new String[1];
 
+		for (String node:urlIDs.keySet()){
+
+
+			// test all nodes as the starting point
+			String startNode=node;
+			int nodeID= urlIDs.get(startNode);
+
+			// get the adjacencylist of the currentnode
+
+			Queue<List> queue = new LinkedList<>();
+			List<Integer> rootPath = new ArrayList<>();
+			rootPath.add(nodeID);
+			
+			queue.add(rootPath);
+
+			
+			while (!queue.isEmpty()){
+				boolean[] visited = new boolean[nodeCount];
+				List<Integer> currentPath = queue.poll();
+				for (Integer i : currentPath){
+					visited[i]=true;
+				}
+
+				int lastNodeID = currentPath.get(currentPath.size()-1);
+				List<Integer> lastNodeAdjLst =  adjacencyList.get(lastNodeID);
+				for (Integer i: lastNodeAdjLst){
+					if (!visited[i]){
+						List<Integer> newPathList =  new ArrayList<>();
+						newPathList.addAll(currentPath);
+						newPathList.add(i);
+						queue.add(newPathList);
+						if (newPathList.size() == nodeCount){
+							for (Integer a : newPathList){
+								System.out.print(a + "\t");
+							}
+							System.out.println("");
+
+						}
+					}
+				}
+			}
+		}
+        String[] bob = new String[1];
         return bob;
 
     }
