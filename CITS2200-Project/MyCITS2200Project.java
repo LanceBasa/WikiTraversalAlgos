@@ -401,24 +401,25 @@ public class MyCITS2200Project implements CITS2200Project{
 	
 	public boolean backtrack(int vertex, List<Integer> path, boolean[] visited) {
 		path.add(vertex);
+		System.out.println(path);
 		visited[vertex] = true;
 		int startVertex;
 	
 		if (path.size() == nodeCount) {
-			startVertex = path.get(0);
-			if (adjacencyList.get(vertex).contains(startVertex)) {
 				return true; // Hamiltonian path found
-			}
 		}
 	
 		for (int v : adjacencyList.get(vertex)) {
 			if (!visited[v]) {
+				System.out.println(v);
 				if (backtrack(v, path, visited)) {
 					return true; // Hamiltonian path found
 				}
 			}
 		}
-	
+
+
+		System.out.println("bACKTRACKING TO " + path.get(path.size() -1));
 		path.remove(path.size() - 1); // Remove the last vertex from the path
 		visited[vertex] = false; // Unvisit the node
 		return false; // No Hamiltonian path found
