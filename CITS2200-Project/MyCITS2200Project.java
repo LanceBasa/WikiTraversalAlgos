@@ -391,7 +391,7 @@ public class MyCITS2200Project implements CITS2200Project{
 		List<Integer> path = new ArrayList<>();
 		boolean[] visited = new boolean[nodeCount];
 	
-		for (int v = 7; v < nodeCount; v++) {
+		for (int v = 1; v < nodeCount; v++) {
 			if (backtrack(v, path, visited)) {
 				return path; // Hamiltonian path found
 			}
@@ -401,7 +401,6 @@ public class MyCITS2200Project implements CITS2200Project{
 	
 	public boolean backtrack(int vertex, List<Integer> path, boolean[] visited) {
 		path.add(vertex);
-		System.out.println(path);
 		visited[vertex] = true;
 		int startVertex;
 	
@@ -411,7 +410,6 @@ public class MyCITS2200Project implements CITS2200Project{
 	
 		for (int v : adjacencyList.get(vertex)) {
 			if (!visited[v]) {
-				System.out.println(v);
 				if (backtrack(v, path, visited)) {
 					return true; // Hamiltonian path found
 				}
@@ -419,7 +417,6 @@ public class MyCITS2200Project implements CITS2200Project{
 		}
 
 
-		System.out.println("bACKTRACKING TO " + path.get(path.size() -1));
 		path.remove(path.size() - 1); // Remove the last vertex from the path
 		visited[vertex] = false; // Unvisit the node
 		return false; // No Hamiltonian path found
