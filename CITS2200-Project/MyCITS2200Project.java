@@ -391,7 +391,7 @@ public class MyCITS2200Project implements CITS2200Project{
 		List<Integer> path = new ArrayList<>();
 		boolean[] visited = new boolean[nodeCount];
 	
-		for (int v = 0; v < nodeCount; v++) {
+		for (int v = 7; v < nodeCount; v++) {
 			if (backtrack(v, path, visited)) {
 				return path; // Hamiltonian path found
 			}
