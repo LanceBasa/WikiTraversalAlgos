@@ -142,7 +142,7 @@ public class MyCITS2200Project implements CITS2200Project{
                 if (currentFrom!= currentTo){
                     int curentShortestPath = getShortestPath(currentFrom,currentTo);
 					// if there is a node further than the currentTo node update the max shortest path
-					if (maxShortestPath<curentShortestPath){
+ 					if (maxShortestPath<curentShortestPath){
 						maxShortestPath=curentShortestPath;
 					}
                 }
@@ -369,12 +369,68 @@ public class MyCITS2200Project implements CITS2200Project{
 	 * 
 	 * @return a Hamiltonian path of the page graph.
 	 */
-	public String[] getHamiltonianPath(){
-        String[] bob = new String[1];
+	public String[] getHamiltonianPath() {
+		List<Integer> hamiltonianPath = findHamiltonianPath();
+	
+		if (hamiltonianPath.isEmpty()) {
+			return new String[0]; // Return an empty array if no Hamiltonian path is found
+		}
+	
+		String[] path = new String[hamiltonianPath.size()];
+	
+		for (int i = 0; i < hamiltonianPath.size(); i++) {
+			int vertex = hamiltonianPath.get(i);
+			String url = getUrlFromId(vertex);
+			path[i] = url;
+		}
+	
+		return path;
+	}
+	
+	public List<Integer> findHamiltonianPath() {
+		List<Integer> path = new ArrayList<>();
+		boolean[] visited = new boolean[nodeCount];
+	
+		for (int v = 0; v < nodeCount; v++) {
+			if (backtrack(v, path, visited)) {
+				return path; // Hamiltonian path found
+			}
+		}
+		return new ArrayList<>(); // No Hamiltonian path found
+	}
+	
+	public boolean backtrack(int vertex, List<Integer> path, boolean[] visited) {
+		path.add(vertex);
+		visited[vertex] = true;
+		int startVertex;
+	
+		if (path.size() == nodeCount) {
+			startVertex = path.get(0);
+			if (adjacencyList.get(vertex).contains(startVertex)) {
+				return true; // Hamiltonian path found
+			}
+		}
+	
+		for (int v : adjacencyList.get(vertex)) {
+			if (!visited[v]) {
+				if (backtrack(v, path, visited)) {
+					return true; // Hamiltonian path found
+				}
+			}
+		}
+	
+		path.remove(path.size() - 1); // Remove the last vertex from the path
+		visited[vertex] = false; // Unvisit the node
+		return false; // No Hamiltonian path found
+	}
+	
+	public String getUrlFromId(int id) {
+		for (Map.Entry<String, Integer> entry : urlIDs.entrySet()) {
+			if (entry.getValue().equals(id)) {
+				return entry.getKey(); // Return the URL associated with the ID
+			}
+		}
+		return null; // Return null if the ID is not found (should not happen in a valid graph)
+	}
 
-        return bob;
-
-    }
 }
-
-    
