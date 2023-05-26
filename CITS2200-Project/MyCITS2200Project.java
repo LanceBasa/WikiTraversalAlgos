@@ -149,7 +149,7 @@ public class MyCITS2200Project implements CITS2200Project{
             }
 			// before changing the current from node, check if the max shortest path of the current node is the minimum
 			// if so, clear the list and add the current node, else if it is equal, dont clear it and ad the node.
-			if(maxShortestPath<minimum){
+			if(maxShortestPath<minimum && maxShortestPath != 0){
 				minimum=maxShortestPath;
 				centerslist.clear();
 				centerslist.add(currentFrom);
