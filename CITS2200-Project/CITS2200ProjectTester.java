@@ -33,7 +33,7 @@ public class CITS2200ProjectTester {
 
 		//change it to test
 		String urlFrom = "1";
-		String urlTo = "2";
+		String urlTo = "3";
 
 
 		int q1result = proj.getShortestPath(urlFrom, urlTo);

@@ -176,132 +176,27 @@ public class MyCITS2200Project implements CITS2200Project{
 	 * 
 	 * @return an array containing every strongly connected component.
 	 */
-
-
-	/** old strongly connected components.... works but does not work...
-	public String[][] getStronglyConnectedComponents(){
-		ArrayList<ArrayList<String>> scc = new ArrayList<>();		// 2D array Lists of strings
-		Integer sccCount=0;											// SCC count
-		int[] lowLinkVal=new int[nodeCount];						//low link val of each nodes
-		Stack<Integer> myStack = new Stack<Integer>();
- 
-		//initialize all values as unvisited if Integer.NA
-		for(int i=0; i<nodeCount;i++){
-			scc.add(new ArrayList<String>());
-			lowLinkVal[i]=Integer.MAX_VALUE;					
-		}
-
-		// call dfs function for each node that has not been visited
-		for (int i=0; i<nodeCount;i++){
-			if(lowLinkVal[i]== Integer.MAX_VALUE){
-				myStack.add(i);
-				dfs(myStack, lowLinkVal,scc,sccCount);
-			}
-		}
-
-		// array to keep track of what is added in the stack
-		boolean[] added = new boolean[nodeCount];
-		Arrays.fill(added,false);
-
-		while (!myStack.isEmpty()){
-			int partofSCC=myStack.pop();
-			int currentLowestSCC=lowLinkVal[partofSCC];
-			if(added[currentLowestSCC]){
-				continue;
-			}else{
-				added[currentLowestSCC]=true;
-			}
-			for(int j=0; j<nodeCount;j++){
-				if (lowLinkVal[j]==currentLowestSCC){
-					for (Map.Entry<String, Integer> entry: urlIDs.entrySet()){
-						String key = entry.getKey();
-						Integer value = entry.getValue();
-						ArrayList<String> temp=scc.get(sccCount);
-						if(value==j && !temp.contains(key) ){
-							temp.add(key);
-						}
-					}						
-				}
-			}
-			sccCount++;
-		}
-
-		String[][] sccArray = new String[scc.size()][];
-		for (int i = 0; i < scc.size(); i++) {
-			ArrayList<String> component = scc.get(i);
-			if(!scc.isEmpty()){}
-			sccArray[i] = component.toArray(new String[component.size()]);
-		}
-        return sccArray;
-    }
-
-	private void dfs(Stack<Integer> myStack, int[] lowLinkVal, ArrayList<ArrayList<String>> scc, Integer counter) {
-		int nodeID = myStack.peek();
-		lowLinkVal[nodeID] = nodeID;
-		int minLowLinkVal = nodeID; // Track the minimum lowLinkVal during traversal
-		ArrayList<Integer> currentNodeAdj = adjacencyList.get(nodeID);
-		for (Integer j : currentNodeAdj) {
-			if (!myStack.contains(j) && lowLinkVal[j] == Integer.MAX_VALUE) {
-				myStack.add(j);
-				dfs(myStack, lowLinkVal,scc,counter);
-			}
-			if (myStack.contains(j)) {
-				minLowLinkVal = Math.min(minLowLinkVal, lowLinkVal[j]);
-			}
-		}
-
-
-		
-		lowLinkVal[nodeID] = minLowLinkVal; // Update the lowLinkVal for the current node
-		ArrayList<Integer> currAdj = adjacencyList.get(lowLinkVal[nodeID]);
-		for(int neighbours : currAdj){
-			if(lowLinkVal[nodeID] > lowLinkVal[neighbours]){
-				lowLinkVal[nodeID] = lowLinkVal[neighbours];
-			}
-		}
-		
-
-		if(nodeID==lowLinkVal[nodeID]){
-			ArrayList<String> currentSCC = new ArrayList<String>();
-			for (int i=0; i<nodeCount;i++){
-				if(lowLinkVal[i]==nodeID){
-					for (Map.Entry<String, Integer> entry: urlIDs.entrySet()){
-						String key = entry.getKey();
-						Integer value = entry.getValue();
-						ArrayList<String> temp=scc.get(counter);
-						if(value==i && !temp.contains(key) ){
-							currentSCC.add(key);
-						}
-						else
-						{
-							continue;
-						}	
-					}
-				}
-			}		
-			counter++;
-			scc.add(currentSCC);
-		}
-	}
-
-	*/
-
 	public String[][] getStronglyConnectedComponents() {
-        int[] lowLinkVal = new int[nodeCount];			// to keep track current low link val
-        int[] lowestLink = new int[nodeCount];			// to keep track of the lowest link and when to create a new scc
+		// to keep track node's low link val
+        int[] lowLinkVal = new int[nodeCount];	
+		// to keep track of the lowest link. used in a condition to make SCC
+        int[] lowestLink = new int[nodeCount];		
+		// to keep track of what is on the stack
         boolean[] onStack = new boolean[nodeCount];
+		//tracking the nodes on currently traversed path. used to make scc	
         Stack<Integer> stack = new Stack<>();
 
-        // Initialize arrays
+        // Initialize arrays as -1.
         for (int i = 0; i < nodeCount; i++) {
             lowLinkVal[i] = -1;
             lowestLink[i] = -1;
             onStack[i] = false;
         }
 
-		//initialize the arrayList
+		//initialize an empty arrayList
         List<List<Integer>> scc = new ArrayList<>();
 		
+		// for each node, if lowestLink is not set (which means not visited), perform dfs
         for (int nodeID = 0; nodeID < nodeCount; nodeID++) {
             if (lowestLink[nodeID] == -1) {
                 dfs(nodeID, lowestLink, lowLinkVal, onStack, stack, scc);
@@ -326,13 +221,26 @@ public class MyCITS2200Project implements CITS2200Project{
         return sccArray;
     }
 
-
+	/**
+	 * a method that performs DFS and creates SCC which may recursively call its own
+	 * @param nodeID the current node to perform dfs
+	 * @param lowestLink the array for the lowest link, used for making SCC
+	 * @param onStack the boolean array which stores the node is on stack by its index
+	 * @param stack the stack of nodes which is currently in traversal path
+	 * @param scc a list which contains a list of strongly connected component(s)
+	 */
     private void dfs(int nodeID, int[] lowestLink, int[] lowLinkVal, boolean[] onStack, Stack<Integer> stack , List<List<Integer>> scc) {
+		// set the lowest link and low link val equal to its node id. 
+		// lowlink val will change to get the lowest link for the scc
+		// the lowest link should not change and it is used to compare with low link val to get SCC
         lowestLink[nodeID] = nodeID;
         lowLinkVal[nodeID] = nodeID;
+		// add the node to the stack of nodes being currently traverse
         stack.push(nodeID);
         onStack[nodeID] = true;
 
+		// for every adjacent node to the current nodeID perform dfs if the lowestlink is not set
+		// everytime theres an adj node, update the current nodes low link value with min(neighbours llv, current llv)
         List<Integer> currentNodeAdj = adjacencyList.get(nodeID);
         for (int w : currentNodeAdj) {
             if (lowestLink[w] == -1) {
@@ -343,6 +251,10 @@ public class MyCITS2200Project implements CITS2200Project{
             }
         }
 
+		// if the lowLinkval is the same as lowest link val
+		// then create a new list and add the popped id into the list untill it is equal to currentNodeID
+		// once the last popped item is equal to current node id, 
+		// stop popping and add the list as a scc to the scc array
         if (lowLinkVal[nodeID] == lowestLink[nodeID]) {
             List<Integer> component = new ArrayList<>();
             int w;
@@ -391,7 +303,7 @@ public class MyCITS2200Project implements CITS2200Project{
 		List<Integer> path = new ArrayList<>();
 		boolean[] visited = new boolean[nodeCount];
 	
-		for (int v = 1; v < nodeCount; v++) {
+		for (int v = 0; v < nodeCount; v++) {
 			if (backtrack(v, path, visited)) {
 				return path; // Hamiltonian path found
 			}
@@ -402,7 +314,6 @@ public class MyCITS2200Project implements CITS2200Project{
 	public boolean backtrack(int vertex, List<Integer> path, boolean[] visited) {
 		path.add(vertex);
 		visited[vertex] = true;
-		int startVertex;
 	
 		if (path.size() == nodeCount) {
 				return true; // Hamiltonian path found
